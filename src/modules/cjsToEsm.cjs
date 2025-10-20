@@ -1,16 +1,22 @@
-const path = require('node:path');
-const { release, version } = require('node:os');
-const { createServer: createServerHttp } = require('node:http');
+import path from 'node:path';
+import { release, version } from 'node:os';
+import { createServer as createServerHttp } from 'node:http';
+import './files/c.cjs' assert { type: 'javascript' };
 
-require('./files/c.cjs');
+import aJson from './files/a.json' assert { type: 'json' };
+import bJson from './files/b.json' assert { type: 'json' };
 
 const random = Math.random();
-
-const unknownObject = random > 0.5 ? require('./files/a.json') : require('./files/b.json');
+const unknownObject = random > 0.5 ? aJson : bJson;
 
 console.log(`Release ${release()}`);
 console.log(`Version ${version()}`);
 console.log(`Path segment separator is "${path.sep}"`);
+
+// These are not available in ESM by default
+import { fileURLToPath } from 'node:url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 console.log(`Path to current file is ${__filename}`);
 console.log(`Path to current directory is ${__dirname}`);
@@ -28,7 +34,4 @@ myServer.listen(PORT, () => {
   console.log('To terminate it, use Ctrl+C combination');
 });
 
-module.exports = {
-  unknownObject,
-  myServer,
-};
+export { unknownObject, myServer };
